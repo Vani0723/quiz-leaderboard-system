@@ -1,9 +1,9 @@
-Quiz Leaderboard System
-Overview
+**Quiz Leaderboard System**
+**Overview**
 
 This Java application implements a solution for the Quiz Leaderboard assignment. It interacts with an external API to collect quiz data, removes duplicate entries, aggregates participant scores, generates a sorted leaderboard, and submits the final result for validation.
 
-Problem Statement
+**Problem Statement**
 
 The application is required to:
 
@@ -16,7 +16,7 @@ Submit the leaderboard exactly once
 Solution Approach
 Polling
 
-The application sends HTTP GET requests to retrieve quiz data:
+**The application sends HTTP GET requests to retrieve quiz data:**
 
 GET /quiz/messages?regNo=XXXX&poll=0–9
 Deduplication
@@ -27,7 +27,7 @@ roundId + "_" + participant
 
 This ensures that repeated API responses do not affect score calculations.
 
-Aggregation
+**Aggregation**
 
 A HashMap is used to store and update total scores per participant:
 
@@ -37,33 +37,33 @@ Leaderboard Generation
 
 The aggregated data is converted into a list and sorted in descending order based on total scores.
 
-Submission
+**Submission**
 
 The final leaderboard is sent using a POST request:
 
 POST /quiz/submit
-Technologies Used
+**Technologies Used**
 Java 11 or higher
 Maven for dependency and build management
 Jackson for JSON parsing
 Java HttpClient for API communication
-How to Run
+**How to Run**
 Ensure Java 11 or higher is installed
 Clone the repository
 Navigate to the project directory
 Execute the following command:
 mvn clean compile exec:java
-API Details
+**API Details**
 
-Base URL:
+**Base URL:
 
-https://devapigw.vidalhealthtpa.com/srm-quiz-task
+https://devapigw.vidalhealthtpa.com/srm-quiz-task**
 
-Endpoints:
+**Endpoints:**
 
 GET  /quiz/messages?regNo=XXXX&poll=0–9  
 POST /quiz/submit
-Sample Output
+**Sample Output**
 Leaderboard:
 Alice : 100
 Bob   : 120
@@ -77,7 +77,7 @@ Submission Response:
   "expectedTotal": 220,
   "message": "Correct!"
 }
-Key Highlights
+**Key Highlights**
 Ensures accurate handling of duplicate API responses
 Maintains strict polling constraints with delay enforcement
 Produces a correctly sorted leaderboard
