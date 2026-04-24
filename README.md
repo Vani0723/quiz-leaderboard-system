@@ -43,3 +43,17 @@ The task involves building an application that:
 ## Output
 
 The application prints the submit response, which includes correctness validation.
+
+## Sample Output
+
+Leaderboard:
+Alice: 100
+Bob: 120
+
+Total Score: 220
+
+Submission Response:
+{
+  "isCorrect": true,
+  "message": "Correct!"
+}
