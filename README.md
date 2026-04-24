@@ -1,59 +1,85 @@
 # Quiz Leaderboard System
 
-This Java application solves the Quiz Leaderboard assignment by polling an external API, deduplicating data, aggregating scores, and submitting the leaderboard.
+📌 Overview
 
-## Problem Overview
+This Java application solves the Quiz Leaderboard assignment by polling an external API, removing duplicate data, aggregating scores, and submitting a leaderboard.
 
-The task involves building an application that:
-- Polls a validator API 10 times with 5-second delays
-- Handles duplicate data using (roundId + participant) as key
-- Aggregates scores per participant
-- Generates a sorted leaderboard
-- Computes total score
-- Submits the leaderboard once
+🧩 Problem Statement
 
-## Solution Approach
+The application must:
 
-1. **Polling**: Uses Java HttpClient to make GET requests to `/quiz/messages` with poll=0 to 9
-2. **Deduplication**: Maintains a Set of seen keys (roundId_participant)
-3. **Aggregation**: Uses a Map to accumulate scores per participant
-4. **Leaderboard**: Sorts participants by total score descending
-5. **Submission**: POSTs the leaderboard to `/quiz/submit`
+- Poll a validator API 10 times with a 5-second delay
+- Handle duplicate data using `(roundId + participant)`
+- Aggregate scores per participant
+- Generate a leaderboard sorted by total score
+- Compute total score across all participants
+- Submit the leaderboard only once
 
-## Technologies Used
+⚙️ Solution Approach
+
+1. **Polling**
+   - Calls API: `GET /quiz/messages?regNo=XXXX&poll=0–9`
+2. **Deduplication**
+   - Uses a `HashSet` to track:
+     - `roundId + "_" + participant`
+   - Ensures duplicate entries are ignored
+3. **Aggregation**
+   - Uses a `HashMap<String, Integer>`
+   - Adds scores per participant
+4. **Leaderboard**
+   - Converts `Map` → `List`
+   - Sorts in descending order
+5. **Submission**
+   - Sends final result: `POST /quiz/submit`
+
+🛠️ Technologies Used
 
 - Java 11+
-- Maven for build management
-- Jackson for JSON processing
-- Java HttpClient for API calls
+- Maven
+- Jackson (JSON parsing)
+- Java HttpClient (API calls)
 
-## How to Run
+▶️ How to Run
 
-1. Ensure Java 11+ is installed
-2. Clone the repository
-3. Navigate to the project directory
-4. Run `mvn clean compile exec:java`
+```bash
+mvn clean compile exec:java
+```
 
-## API Details
+🌐 API Details
 
-- Base URL: https://devapigw.vidalhealthtpa.com/srm-quiz-task
-- GET /quiz/messages?regNo=2024CS101&poll={0-9}
-- POST /quiz/submit with JSON body containing regNo and leaderboard
+Base URL:
+https://devapigw.vidalhealthtpa.com/srm-quiz-task
 
-## Output
+Endpoints:
 
-The application prints the submit response, which includes correctness validation.
+- `GET /quiz/messages?regNo=XXXX&poll=0–9`
+- `POST /quiz/submit`
 
-## Sample Output
+📊 Sample Output
 
 Leaderboard:
-Alice: 100
-Bob: 120
+
+```
+Alice : 100
+Bob   : 120
+```
 
 Total Score: 220
 
 Submission Response:
+
+```json
 {
   "isCorrect": true,
+  "submittedTotal": 220,
+  "expectedTotal": 220,
   "message": "Correct!"
 }
+```
+
+✅ Key Highlights
+
+- Handles duplicate API responses correctly
+- Ensures idempotent processing
+- Maintains required delay between API calls
+- Produces accurate leaderboard and total score
