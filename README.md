@@ -1,85 +1,84 @@
-# Quiz Leaderboard System
+Quiz Leaderboard System
+Overview
 
-📌 Overview
+This Java application implements a solution for the Quiz Leaderboard assignment. It interacts with an external API to collect quiz data, removes duplicate entries, aggregates participant scores, generates a sorted leaderboard, and submits the final result for validation.
 
-This Java application solves the Quiz Leaderboard assignment by polling an external API, removing duplicate data, aggregating scores, and submitting a leaderboard.
+Problem Statement
 
-🧩 Problem Statement
+The application is required to:
 
-The application must:
+Poll a validator API 10 times with a 5-second delay between each request
+Handle duplicate data using a composite key (roundId + participant)
+Aggregate scores for each participant
+Generate a leaderboard sorted in descending order of total scores
+Compute the total score across all participants
+Submit the leaderboard exactly once
+Solution Approach
+Polling
 
-- Poll a validator API 10 times with a 5-second delay
-- Handle duplicate data using `(roundId + participant)`
-- Aggregate scores per participant
-- Generate a leaderboard sorted by total score
-- Compute total score across all participants
-- Submit the leaderboard only once
+The application sends HTTP GET requests to retrieve quiz data:
 
-⚙️ Solution Approach
+GET /quiz/messages?regNo=XXXX&poll=0–9
+Deduplication
 
-1. **Polling**
-   - Calls API: `GET /quiz/messages?regNo=XXXX&poll=0–9`
-2. **Deduplication**
-   - Uses a `HashSet` to track:
-     - `roundId + "_" + participant`
-   - Ensures duplicate entries are ignored
-3. **Aggregation**
-   - Uses a `HashMap<String, Integer>`
-   - Adds scores per participant
-4. **Leaderboard**
-   - Converts `Map` → `List`
-   - Sorts in descending order
-5. **Submission**
-   - Sends final result: `POST /quiz/submit`
+Duplicate entries are handled using a HashSet. Each record is uniquely identified using:
 
-🛠️ Technologies Used
+roundId + "_" + participant
 
-- Java 11+
-- Maven
-- Jackson (JSON parsing)
-- Java HttpClient (API calls)
+This ensures that repeated API responses do not affect score calculations.
 
-▶️ How to Run
+Aggregation
 
-```bash
+A HashMap is used to store and update total scores per participant:
+
+Key: participant
+Value: total score
+Leaderboard Generation
+
+The aggregated data is converted into a list and sorted in descending order based on total scores.
+
+Submission
+
+The final leaderboard is sent using a POST request:
+
+POST /quiz/submit
+Technologies Used
+Java 11 or higher
+Maven for dependency and build management
+Jackson for JSON parsing
+Java HttpClient for API communication
+How to Run
+Ensure Java 11 or higher is installed
+Clone the repository
+Navigate to the project directory
+Execute the following command:
 mvn clean compile exec:java
-```
-
-🌐 API Details
+API Details
 
 Base URL:
+
 https://devapigw.vidalhealthtpa.com/srm-quiz-task
 
 Endpoints:
 
-- `GET /quiz/messages?regNo=XXXX&poll=0–9`
-- `POST /quiz/submit`
-
-📊 Sample Output
-
+GET  /quiz/messages?regNo=XXXX&poll=0–9  
+POST /quiz/submit
+Sample Output
 Leaderboard:
-
-```
 Alice : 100
 Bob   : 120
-```
 
 Total Score: 220
 
 Submission Response:
-
-```json
 {
   "isCorrect": true,
   "submittedTotal": 220,
   "expectedTotal": 220,
   "message": "Correct!"
 }
-```
-
-✅ Key Highlights
-
-- Handles duplicate API responses correctly
-- Ensures idempotent processing
-- Maintains required delay between API calls
-- Produces accurate leaderboard and total score
+Key Highlights
+Ensures accurate handling of duplicate API responses
+Maintains strict polling constraints with delay enforcement
+Produces a correctly sorted leaderboard
+Submits validated results in the required format
